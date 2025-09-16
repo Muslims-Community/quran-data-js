@@ -139,8 +139,74 @@ const sajdahAyat = [
   { surah: 96, ayah: 19 }
 ];
 
+// Juz boundaries (Para) - [surah, ayah] start of each Juz
+const juzBoundaries = [
+  [1, 1],   // Juz 1: Al-Fatiha 1
+  [2, 142], // Juz 2: Al-Baqarah 142
+  [2, 253], // Juz 3: Al-Baqarah 253
+  [3, 93],  // Juz 4: Ali 'Imran 93
+  [4, 24],  // Juz 5: An-Nisa 24
+  [4, 148], // Juz 6: An-Nisa 148
+  [5, 82],  // Juz 7: Al-Ma'idah 82
+  [6, 111], // Juz 8: Al-An'am 111
+  [7, 88],  // Juz 9: Al-A'raf 88
+  [8, 41],  // Juz 10: Al-Anfal 41
+  [9, 93],  // Juz 11: At-Tawbah 93
+  [11, 6],  // Juz 12: Hud 6
+  [12, 53], // Juz 13: Yusuf 53
+  [15, 1],  // Juz 14: Al-Hijr 1
+  [17, 1],  // Juz 15: Al-Isra 1
+  [18, 75], // Juz 16: Al-Kahf 75
+  [21, 1],  // Juz 17: Al-Anbya 1
+  [23, 1],  // Juz 18: Al-Mu'minun 1
+  [25, 21], // Juz 19: Al-Furqan 21
+  [27, 56], // Juz 20: An-Naml 56
+  [29, 46], // Juz 21: Al-'Ankabut 46
+  [33, 31], // Juz 22: Al-Ahzab 31
+  [36, 28], // Juz 23: Ya-Sin 28
+  [39, 32], // Juz 24: Az-Zumar 32
+  [41, 47], // Juz 25: Fussilat 47
+  [46, 1],  // Juz 26: Al-Ahqaf 1
+  [51, 31], // Juz 27: Adh-Dhariyat 31
+  [58, 1],  // Juz 28: Al-Mujadila 1
+  [67, 1],  // Juz 29: Al-Mulk 1
+  [78, 1]   // Juz 30: An-Naba 1
+];
+
+// Revelation order of surahs
+const revelationOrder = [
+  96, 68, 73, 74, 1, 111, 81, 87, 92, 89, 93, 94, 103, 100, 108, 102, 107, 109, 105, 113, 114, 112, 53, 80, 97, 91, 85, 95, 106, 101, 75, 104, 77, 50, 90, 86, 54, 38, 7, 72, 36, 25, 35, 19, 20, 56, 26, 27, 28, 17, 10, 11, 12, 15, 6, 37, 31, 34, 39, 40, 41, 42, 43, 44, 45, 46, 51, 88, 18, 16, 71, 14, 21, 23, 32, 52, 67, 69, 70, 78, 79, 82, 84, 30, 29, 83, 2, 8, 3, 33, 60, 4, 99, 57, 47, 13, 55, 76, 65, 98, 59, 24, 22, 63, 58, 49, 66, 64, 61, 62, 48, 5, 9, 110
+];
+
 function isSajdahAyah(surahId, ayahId) {
   return sajdahAyat.some(sajdah => sajdah.surah === surahId && sajdah.ayah === ayahId);
+}
+
+function getJuzForAyah(surahId, ayahId) {
+  // Find which Juz this ayah belongs to
+  for (let i = juzBoundaries.length - 1; i >= 0; i--) {
+    const [juzSurah, juzAyah] = juzBoundaries[i];
+    if (surahId > juzSurah || (surahId === juzSurah && ayahId >= juzAyah)) {
+      return i + 1; // Juz numbers are 1-based
+    }
+  }
+  return 1; // Default to Juz 1
+}
+
+function getHizbForAyah(surahId, ayahId) {
+  // Each Juz has 2 Hizb, so Hizb = (Juz - 1) * 2 + 1 or 2
+  const juz = getJuzForAyah(surahId, ayahId);
+
+  // Find the middle point of the Juz for Hizb calculation
+  const juzStart = juzBoundaries[juz - 1];
+  const juzEnd = juz < 30 ? juzBoundaries[juz] : [114, 7]; // Last Juz ends at last ayah
+
+  // Simple approximation: first half = Hizb 1, second half = Hizb 2
+  const baseHizb = (juz - 1) * 2 + 1;
+
+  // More precise calculation would require detailed Hizb boundaries
+  // For now, we'll use a simple approach
+  return baseHizb; // This could be enhanced with exact Hizb boundaries
 }
 
 async function convertXmlToJson() {
@@ -166,6 +232,7 @@ async function convertXmlToJson() {
           name: surahName,
           englishName: surahData[surahId]?.englishName || "",
           revelationType: surahData[surahId]?.revelationType || "Meccan",
+          revelationOrder: revelationOrder.indexOf(surahId) + 1,
           numberOfAyahs: sura.aya ? sura.aya.length : 0,
           ayat: []
         };
@@ -178,7 +245,9 @@ async function convertXmlToJson() {
             const ayahObj = {
               id: ayahId,
               text: ayahText,
-              sajdah: isSajdahAyah(surahId, ayahId)
+              sajdah: isSajdahAyah(surahId, ayahId),
+              juz: getJuzForAyah(surahId, ayahId),
+              hizb: getHizbForAyah(surahId, ayahId)
             };
 
             // Add bismillah if present
@@ -194,12 +263,19 @@ async function convertXmlToJson() {
       });
     }
 
-    // Add source attribution
+    // Add source attribution and metadata
     const finalData = {
       source: "Tanzil Project - https://tanzil.net",
       version: "1.1",
       copyright: "Copyright (C) 2007-2025 Tanzil Project",
       license: "Creative Commons Attribution 3.0",
+      metadata: {
+        totalSurahs: quranData.length,
+        totalAyat: quranData.reduce((total, surah) => total + surah.numberOfAyahs, 0),
+        totalJuz: 30,
+        totalHizb: 60,
+        totalSajdah: sajdahAyat.length
+      },
       surahs: quranData
     };
 

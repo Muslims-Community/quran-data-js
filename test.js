@@ -1,4 +1,8 @@
-const { getAyah, getSurah, searchText, getRandomAyah, getSajdahAyat, getQuranData } = require('./dist/index.js');
+const {
+  getAyah, getSurah, searchText, getRandomAyah, getSajdahAyat, getQuranData,
+  // Phase 1 Enhanced functions (v1.1.0)
+  getAyahRange, getJuz, getHizb, searchBySurahName, getSurahStatistics
+} = require('./dist/index.js');
 
 console.log('🧪 Testing @muslims-community/quran package\n');
 
@@ -100,4 +104,105 @@ try {
   console.log(`✅ Correctly caught error: ${error.message}`);
 }
 
-console.log('\n🎉 All tests completed successfully!');
+// Test Phase 1 Enhanced Functions (v1.1.0)
+console.log('\n🚀 Testing Phase 1 Enhanced Functions (v1.1.0):');
+
+// Test getAyahRange
+console.log('\n📖 Testing getAyahRange(2, 1, 3):');
+try {
+  const ayahRange = getAyahRange(2, 1, 3);
+  console.log(`✅ Range: ${ayahRange.range.start}-${ayahRange.range.end} (${ayahRange.range.count} ayat)`);
+  console.log(`✅ First ayah: ${ayahRange.ayat[0].text.substring(0, 30)}...`);
+  console.log(`✅ Surah: ${ayahRange.surah.englishName}`);
+} catch (error) {
+  console.log(`❌ Error: ${error.message}`);
+}
+
+// Test getJuz
+console.log('\n📚 Testing getJuz(1):');
+try {
+  const juz = getJuz(1);
+  console.log(`✅ Juz ${juz.juz}: ${juz.totalAyat} ayat`);
+  console.log(`✅ First ayah: ${juz.ayat[0].text}`);
+  console.log(`✅ From: ${juz.ayat[0].surah.englishName}`);
+} catch (error) {
+  console.log(`❌ Error: ${error.message}`);
+}
+
+// Test getHizb
+console.log('\n📑 Testing getHizb(1):');
+try {
+  const hizb = getHizb(1);
+  console.log(`✅ Hizb ${hizb.hizb} (Juz ${hizb.juz}): ${hizb.totalAyat} ayat`);
+  if (hizb.ayat.length > 0) {
+    console.log(`✅ First ayah: ${hizb.ayat[0].text.substring(0, 30)}...`);
+  }
+} catch (error) {
+  console.log(`❌ Error: ${error.message}`);
+}
+
+// Test searchBySurahName
+console.log('\n🔍 Testing searchBySurahName("Fatiha"):');
+try {
+  const surahSearch = searchBySurahName('Fatiha');
+  console.log(`✅ Found ${surahSearch.totalResults} results`);
+  if (surahSearch.results.length > 0) {
+    console.log(`✅ Result: ${surahSearch.results[0].englishName} (${surahSearch.results[0].name})`);
+  }
+} catch (error) {
+  console.log(`❌ Error: ${error.message}`);
+}
+
+// Test searchBySurahName with Arabic
+console.log('\n🔍 Testing searchBySurahName("البقرة"):');
+try {
+  const arabicSearch = searchBySurahName('البقرة');
+  console.log(`✅ Found ${arabicSearch.totalResults} results`);
+  if (arabicSearch.results.length > 0) {
+    console.log(`✅ Result: ${arabicSearch.results[0].englishName} (${arabicSearch.results[0].name})`);
+  }
+} catch (error) {
+  console.log(`❌ Error: ${error.message}`);
+}
+
+// Test getSurahStatistics
+console.log('\n📊 Testing getSurahStatistics():');
+try {
+  const stats = getSurahStatistics();
+  console.log(`✅ Total Surahs: ${stats.totalSurahs}`);
+  console.log(`✅ Total Ayat: ${stats.totalAyat}`);
+  console.log(`✅ Meccan: ${stats.meccanSurahs}, Medinan: ${stats.medinanSurahs}`);
+  console.log(`✅ Average Ayat per Surah: ${stats.averageAyatPerSurah}`);
+  console.log(`✅ Longest: ${stats.longestSurah.englishName} (${stats.longestSurah.numberOfAyahs} ayat)`);
+  console.log(`✅ Shortest: ${stats.shortestSurah.englishName} (${stats.shortestSurah.numberOfAyahs} ayat)`);
+} catch (error) {
+  console.log(`❌ Error: ${error.message}`);
+}
+
+// Test error handling for new functions
+console.log('\n⚠️ Testing error handling for enhanced functions:');
+try {
+  getAyahRange(999, 1, 1); // Invalid surah
+} catch (error) {
+  console.log(`✅ Correctly caught error: ${error.message}`);
+}
+
+try {
+  getJuz(31); // Invalid juz
+} catch (error) {
+  console.log(`✅ Correctly caught error: ${error.message}`);
+}
+
+try {
+  getHizb(61); // Invalid hizb
+} catch (error) {
+  console.log(`✅ Correctly caught error: ${error.message}`);
+}
+
+try {
+  searchBySurahName(''); // Empty search
+} catch (error) {
+  console.log(`✅ Correctly caught error: ${error.message}`);
+}
+
+console.log('\n🎉 All tests completed successfully! Phase 1 Enhanced Functions (v1.1.0) working perfectly!');

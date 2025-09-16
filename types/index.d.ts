@@ -2,6 +2,8 @@ export interface Ayah {
   id: number;
   text: string;
   sajdah: boolean;
+  juz: number;
+  hizb: number;
   bismillah?: string;
 }
 
@@ -13,6 +15,7 @@ export interface SurahInfo {
 }
 
 export interface Surah extends SurahInfo {
+  revelationOrder: number;
   numberOfAyahs: number;
   ayat: Ayah[];
   source: string;
@@ -41,6 +44,67 @@ export interface SearchResult {
 export interface SajdahResult {
   sajdahAyat: AyahWithSurah[];
   totalSajdahAyat: number;
+  source: string;
+}
+
+// Phase 1 Enhanced Types - v1.1.0
+
+export interface AyahRange {
+  surah: SurahInfo;
+  range: {
+    start: number;
+    end: number;
+    count: number;
+  };
+  ayat: AyahWithSurah[];
+  source: string;
+}
+
+export interface JuzResult {
+  juz: number;
+  totalAyat: number;
+  ayat: AyahWithSurah[];
+  source: string;
+}
+
+export interface HizbResult {
+  hizb: number;
+  juz: number;
+  totalAyat: number;
+  ayat: AyahWithSurah[];
+  source: string;
+}
+
+export interface SurahSearchResult {
+  searchTerm: string;
+  totalResults: number;
+  results: Surah[];
+  source: string;
+}
+
+export interface SurahStatistics {
+  totalSurahs: number;
+  totalAyat: number;
+  meccanSurahs: number;
+  medinanSurahs: number;
+  averageAyatPerSurah: number;
+  longestSurah: {
+    id: number;
+    name: string;
+    englishName: string;
+    numberOfAyahs: number;
+  };
+  shortestSurah: {
+    id: number;
+    name: string;
+    englishName: string;
+    numberOfAyahs: number;
+  };
+  ayatCounts: {
+    min: number;
+    max: number;
+    distribution: Record<number, number>;
+  };
   source: string;
 }
 
@@ -86,3 +150,45 @@ export function getRandomAyah(): AyahWithSurah;
  * @returns All ayat where sajdah is recommended
  */
 export function getSajdahAyat(): SajdahResult;
+
+// Phase 1 Enhanced Functions - v1.1.0
+
+/**
+ * Get a range of ayat from a specific surah
+ * @param surahId - The surah number (1-114)
+ * @param startAyah - The starting ayah number
+ * @param endAyah - The ending ayah number
+ * @returns Range of ayat with metadata
+ * @throws Error if any parameter is invalid
+ */
+export function getAyahRange(surahId: number, startAyah: number, endAyah: number): AyahRange;
+
+/**
+ * Get all ayat from a specific Juz (Para)
+ * @param juzNumber - The Juz number (1-30)
+ * @returns All ayat in the specified Juz
+ * @throws Error if Juz number is invalid
+ */
+export function getJuz(juzNumber: number): JuzResult;
+
+/**
+ * Get all ayat from a specific Hizb
+ * @param hizbNumber - The Hizb number (1-60)
+ * @returns All ayat in the specified Hizb
+ * @throws Error if Hizb number is invalid
+ */
+export function getHizb(hizbNumber: number): HizbResult;
+
+/**
+ * Search for surahs by Arabic or English name
+ * @param name - The surah name to search for (Arabic or English)
+ * @returns Matching surahs
+ * @throws Error if search term is empty
+ */
+export function searchBySurahName(name: string): SurahSearchResult;
+
+/**
+ * Get comprehensive statistics about the Quran
+ * @returns Detailed statistics including counts, averages, and distributions
+ */
+export function getSurahStatistics(): SurahStatistics;

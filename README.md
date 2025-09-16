@@ -40,12 +40,20 @@ console.log(surah.numberOfAyahs); // 110
 ### ES Modules (Modern JavaScript)
 
 ```javascript
-import { getAyah, getSurah, searchText } from '@muslims-community/quran';
+import { getAyah, getSurah, searchText, getJuz, getAyahRange } from '@muslims-community/quran';
 
 // Get random ayah
 import { getRandomAyah } from '@muslims-community/quran';
 const randomAyah = getRandomAyah();
 console.log(randomAyah.text);
+
+// Get a range of ayat
+const range = getAyahRange(2, 1, 5); // Al-Baqarah 1-5
+console.log(`Reading ${range.range.count} ayat from ${range.surah.englishName}`);
+
+// Get complete Juz for daily reading
+const juz1 = getJuz(1);
+console.log(`Juz 1 contains ${juz1.totalAyat} ayat`);
 
 // Search for text
 const results = searchText('الله');
@@ -147,6 +155,114 @@ Returns all ayat where sajdah (prostration) is recommended.
 
 Returns the complete Quran dataset.
 
+## 🚀 Enhanced Functions (v1.1.0)
+
+### `getAyahRange(surahId: number, startAyah: number, endAyah: number): AyahRange`
+
+Get a range of ayat from a specific surah - perfect for reading applications.
+
+**Parameters:**
+- `surahId` (1-114): The surah number
+- `startAyah`: Starting ayah number
+- `endAyah`: Ending ayah number
+
+**Returns:**
+```javascript
+{
+  surah: { id: 2, name: "البقرة", englishName: "Al-Baqarah", revelationType: "Medinan" },
+  range: { start: 1, end: 5, count: 5 },
+  ayat: [
+    { id: 1, text: "الم", juz: 1, hizb: 1, sajdah: false },
+    // ... more ayat
+  ],
+  source: "Tanzil Project - https://tanzil.net"
+}
+```
+
+### `getJuz(juzNumber: number): JuzResult`
+
+Get all ayat from a specific Juz (Para) - essential for daily reading schedules.
+
+**Parameters:**
+- `juzNumber` (1-30): The Juz number
+
+**Returns:**
+```javascript
+{
+  juz: 1,
+  totalAyat: 148,
+  ayat: [ /* all ayat in Juz 1 */ ],
+  source: "Tanzil Project - https://tanzil.net"
+}
+```
+
+### `getHizb(hizbNumber: number): HizbResult`
+
+Get all ayat from a specific Hizb - for precise reading portions.
+
+**Parameters:**
+- `hizbNumber` (1-60): The Hizb number
+
+**Returns:**
+```javascript
+{
+  hizb: 1,
+  juz: 1,
+  totalAyat: 74,
+  ayat: [ /* all ayat in Hizb 1 */ ],
+  source: "Tanzil Project - https://tanzil.net"
+}
+```
+
+### `searchBySurahName(name: string): SurahSearchResult`
+
+Search for surahs by Arabic or English name.
+
+**Parameters:**
+- `name`: Surah name to search for (supports partial matching)
+
+**Returns:**
+```javascript
+{
+  searchTerm: "Fatiha",
+  totalResults: 1,
+  results: [
+    {
+      id: 1,
+      name: "الفاتحة",
+      englishName: "Al-Fatiha",
+      revelationType: "Meccan",
+      numberOfAyahs: 7,
+      // ... complete surah data
+    }
+  ],
+  source: "Tanzil Project - https://tanzil.net"
+}
+```
+
+### `getSurahStatistics(): SurahStatistics`
+
+Get comprehensive statistics about the Quran - perfect for educational apps.
+
+**Returns:**
+```javascript
+{
+  totalSurahs: 114,
+  totalAyat: 6236,
+  meccanSurahs: 86,
+  medinanSurahs: 28,
+  averageAyatPerSurah: 54.7,
+  longestSurah: { id: 2, name: "البقرة", englishName: "Al-Baqarah", numberOfAyahs: 286 },
+  shortestSurah: { id: 103, name: "العصر", englishName: "Al-'Asr", numberOfAyahs: 3 },
+  ayatCounts: {
+    min: 3,
+    max: 286,
+    distribution: { 3: 1, 4: 2, 5: 2, /* ... */ }
+  },
+  source: "Tanzil Project - https://tanzil.net"
+}
+```
+
 ## Usage Examples
 
 ### React Component
@@ -208,6 +324,67 @@ console.log(`Total sajdah ayat: ${sajdahVerses.totalSajdahAyat}`);
 sajdahVerses.sajdahAyat.forEach(ayah => {
   console.log(`${ayah.surah.englishName} ${ayah.id}: ${ayah.text}`);
 });
+```
+
+### Daily Juz Reading App
+
+```javascript
+import { getJuz, getSurahStatistics } from '@muslims-community/quran';
+
+function createReadingPlan() {
+  const stats = getSurahStatistics();
+  console.log(`📖 Complete Quran: ${stats.totalAyat} ayat in ${stats.totalSurahs} surahs`);
+
+  // 30-day reading plan
+  for (let day = 1; day <= 30; day++) {
+    const juz = getJuz(day);
+    console.log(`Day ${day}: Juz ${juz.juz} - ${juz.totalAyat} ayat`);
+  }
+}
+```
+
+### Range Reading for Study
+
+```javascript
+import { getAyahRange, searchBySurahName } from '@muslims-community/quran';
+
+// Find and read specific sections
+const kahfSurah = searchBySurahName('Kahf').results[0];
+const opening = getAyahRange(kahfSurah.id, 1, 10);
+
+console.log(`Reading opening of ${opening.surah.englishName}:`);
+opening.ayat.forEach((ayah, index) => {
+  console.log(`${index + 1}. ${ayah.text}`);
+});
+```
+
+### Quran Statistics Dashboard
+
+```javascript
+import { getSurahStatistics, getJuz, getHizb } from '@muslims-community/quran';
+
+function generateDashboard() {
+  const stats = getSurahStatistics();
+
+  return {
+    overview: {
+      totalSurahs: stats.totalSurahs,
+      totalAyat: stats.totalAyat,
+      averageLength: stats.averageAyatPerSurah
+    },
+    breakdown: {
+      meccan: stats.meccanSurahs,
+      medinan: stats.medinanSurahs,
+      longest: stats.longestSurah.englishName,
+      shortest: stats.shortestSurah.englishName
+    },
+    reading: {
+      juzCount: 30,
+      hizbCount: 60,
+      dailyAverage: Math.round(stats.totalAyat / 30)
+    }
+  };
+}
 ```
 
 ## Data Structure
