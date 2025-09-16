@@ -1,0 +1,43 @@
+{
+  "name": "@muslims-community/quran",
+  "version": "1.0.0",
+  "description": "Simple, offline Quran data package for JavaScript.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./data": "./dist/quran.json"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node test.js"
+  },
+  "files": [
+    "dist/",
+    "types/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "quran",
+    "islam",
+    "arabic",
+    "tanzil",
+    "script",
+    "library"
+  ],
+  "author": "Muslims Community",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Muslims-Community/quran-js.git"
+  },
+  "homepage": "https://github.com/Muslims-Community/quran-js#readme",
+  "devDependencies": {
+    "xml2js": "^0.6.2"
+  }
+}
