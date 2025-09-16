@@ -649,4 +649,3 @@ This package is created and maintained by developers who love both code and the 
 
 [![GitHub stars](https://img.shields.io/github/stars/Muslims-Community/quran-data-js?style=social)](https://github.com/Muslims-Community/quran-data-js/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/Muslims-Community/quran-data-js?style=social)](https://github.com/Muslims-Community/quran-data-js/network/members)
-[![Follow @MuslimsCommunity](https://img.shields.io/twitter/follow/MuslimsCommunity?style=social)](https://twitter.com/MuslimsCommunity)
