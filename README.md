@@ -232,7 +232,7 @@ The package includes complete Quranic text with the following metadata for each 
 
 ## Contributing
 
-We welcome contributions! Please see our [GitHub repository](https://github.com/Muslims-Community/quran-js) for:
+We welcome contributions! Please see our [GitHub repository](https://github.com/Muslims-Community/quran-data-js) for:
 
 - 🐛 Bug reports
 - 💡 Feature requests
@@ -241,9 +241,9 @@ We welcome contributions! Please see our [GitHub repository](https://github.com/
 
 ## Support
 
-- 📚 [Documentation](https://github.com/Muslims-Community/quran-js#readme)
-- 🐛 [Issues](https://github.com/Muslims-Community/quran-js/issues)
-- 💬 [Discussions](https://github.com/Muslims-Community/quran-js/discussions)
+- 📚 [Documentation](https://github.com/Muslims-Community/quran-data-js#readme)
+- 🐛 [Issues](https://github.com/Muslims-Community/quran-data-js/issues)
+- 💬 [Discussions](https://github.com/Muslims-Community/quran-data-js/discussions)
 
 ## Related Projects
 

@@ -1,6 +1,6 @@
 {
   "name": "@muslims-community/quran",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple, offline Quran data package for JavaScript.",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,9 +34,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Muslims-Community/quran-js.git"
+    "url": "https://github.com/Muslims-Community/quran-data-js.git"
   },
-  "homepage": "https://github.com/Muslims-Community/quran-js#readme",
+  "homepage": "https://github.com/Muslims-Community/quran-data-js#readme",
   "devDependencies": {
     "xml2js": "^0.6.2"
   }
