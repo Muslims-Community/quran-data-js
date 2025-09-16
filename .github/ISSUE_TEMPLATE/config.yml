@@ -1,0 +1,14 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/Muslims-Community/quran-data-js/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📧 Email Support
+    url: mailto:memoibraheem1@gmail.com
+    about: Contact the maintainer directly for private matters
+  - name: 📚 Documentation
+    url: https://github.com/Muslims-Community/quran-data-js#readme
+    about: Read the full documentation and API reference
+  - name: 📦 npm Package
+    url: https://www.npmjs.com/package/@muslims-community/quran
+    about: View the package on npm registry
